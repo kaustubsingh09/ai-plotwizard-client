@@ -17,27 +17,29 @@ export default function Home() {
           style={{ fontSize: "1.2rem" }}
           className=" font-semibold text-gray-400"
         >
-          Unleash Your Imagination: Create captivating children's books with
-          ease using our interactive web app. Craft unique characters, design
-          enchanting settings, and weave magical plots. Harness the power of
-          AI-generated illustrations to bring your stories to life. Ignite young
-          minds and embark on a storytelling adventure with our innovative
-          platform. Start creating today and watch your imagination soar!
+          Unleash Your Imagination: Create captivating children's books with{" "}
+          <br /> ease using our interactive web app. Craft unique characters,
+          design <br /> enchanting settings, and weave magical plots. Harness
+          the power of <br /> AI-generated illustrations to bring your stories
+          to life. Ignite young <br /> minds and embark on a storytelling
+          adventure with our innovative <br /> platform. Start creating today
+          and watch your imagination soar!
         </p>
-      </div>
-      <div className="flex mt-10 gap-3">
-        <Link href="/login" className="btn">
-          <div className="flex flex-row gap-1">
-            Try {companyName}
-            <BsArrowUpRight size={15} />
-          </div>
-        </Link>
-        <button className="btn">
-          <div className="flex flex-row gap-1">
-            Go Pro
-            <MdWorkspacePremium size={15} />
-          </div>
-        </button>
+
+        <div className="flex mt-10 gap-3">
+          <Link href="/login" className="btn">
+            <div className="flex flex-row gap-1">
+              Try {companyName}
+              <BsArrowUpRight size={15} />
+            </div>
+          </Link>
+          <button className="btn">
+            <div className="flex flex-row gap-1">
+              Go Pro
+              <MdWorkspacePremium size={15} />
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   );
