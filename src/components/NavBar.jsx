@@ -8,8 +8,6 @@ import { useRouter } from "next/navigation";
 import { logoutUser } from "@/slice/userSlice";
 import { auth } from "@/firebase/firebase";
 import {
-  GoogleAuthProvider,
-  signInWithPopup,
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";

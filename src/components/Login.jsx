@@ -6,7 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { auth } from "@/firebase/firebase";
 import {
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
   onAuthStateChanged,
 } from "firebase/auth";
 
@@ -23,7 +23,7 @@ export default function Login() {
   });
 
   const signinGoogle = async () => {
-    const res = await signInWithPopup(auth, provider);
+    const res = await signInWithRedirect(auth, provider);
   };
 
   return (

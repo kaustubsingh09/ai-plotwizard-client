@@ -7,7 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 import { auth } from "@/firebase/firebase";
 import {
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
@@ -28,7 +28,7 @@ export default function Signup() {
   }, [auth]);
 
   const signinGoogle = async () => {
-    const res = await signInWithPopup(auth, provider);
+    const res = await signInWithRedirect(auth, provider);
     const name = res.user?.displayName;
     console.log(name);
     router.push(`/${[name]}`);
