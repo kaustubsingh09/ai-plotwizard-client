@@ -1,9 +1,30 @@
+"use client";
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import { auth } from "@/firebase/firebase";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+} from "firebase/auth";
 
 export default function Login() {
   const companyName = "Plot Wizard";
+  const router = useRouter();
+  const provider = new GoogleAuthProvider();
+
+  //have to changed
+  const user = onAuthStateChanged(auth, (state) => {
+    if (state?.email) {
+      router.push(`/${[state.displayName]}`);
+    }
+  });
+
+  const signinGoogle = async () => {
+    const res = await signInWithPopup(auth, provider);
+  };
 
   return (
     <div className="flex flex-wrap justify-center mt-15 p-10">
@@ -39,7 +60,7 @@ export default function Login() {
           />
         </div>
         {/* <span className="text-center text-xl font-semibold">or</span> */}
-        <button className="btn w-full max-w-xs bg-black">
+        <button onClick={signinGoogle} className="btn w-full max-w-xs bg-black">
           <div className="flex flex-row items-center gap-3">
             <FcGoogle size={30} />
             <span>Login with Google</span>

@@ -1,8 +1,43 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
+import { auth } from "@/firebase/firebase";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
 
 export default function Signup() {
+  const provider = new GoogleAuthProvider();
+
+  const router = useRouter();
+
+  const user = onAuthStateChanged(auth, (state) => {
+    if (state?.email) {
+      router.push(`/${[state?.displayName]}`);
+    }
+  });
+
+  useEffect(() => {
+    user();
+  }, [auth]);
+
+  const signinGoogle = async () => {
+    const res = await signInWithPopup(auth, provider);
+    const name = res.user?.displayName;
+    console.log(name);
+    router.push(`/${[name]}`);
+  };
+
+  const logout = async () => {
+    return signOut(auth);
+  };
+
   const companyName = "Plot Wizard";
 
   return (
@@ -51,7 +86,7 @@ export default function Signup() {
           />
         </div>
         {/* <span className="text-center text-xl font-semibold">or</span> */}
-        <button className="btn w-full max-w-xs bg-black">
+        <button onClick={signinGoogle} className="btn w-full max-w-xs bg-black">
           <div className="flex flex-row items-center gap-3">
             <FcGoogle size={30} />
             <span>Sign Up with Google</span>
