@@ -23,7 +23,7 @@ export default function Signup() {
       const result = await getRedirectResult(auth);
 
       if (result?.user) {
-        const { email, displayName } = result?.user;
+        const { email, displayName, uid } = result?.user;
         const createdAt = result?.user.metadata.creationTime;
 
         await userServices.addUser({
@@ -32,6 +32,7 @@ export default function Signup() {
           is_premium: false,
           username: displayName,
           updated_at: "",
+          uid: uid,
         });
         router.push(`/${[displayName]}`);
       }

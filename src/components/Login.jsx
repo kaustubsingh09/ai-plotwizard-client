@@ -17,13 +17,12 @@ export default function Login() {
   const router = useRouter();
   const provider = new GoogleAuthProvider();
 
-
   const handleRedirectResult = async () => {
     try {
       const result = await getRedirectResult(auth);
 
       if (result?.user) {
-        const { email, displayName } = result?.user;
+        const { email, displayName, uid } = result?.user;
         const createdAt = result?.user.metadata.creationTime;
 
         await userServices.addUser({
@@ -32,6 +31,7 @@ export default function Login() {
           is_premium: false,
           username: displayName,
           updated_at: "",
+          uid: uid,
         });
         router.push(`/${[displayName]}`);
       }
@@ -40,13 +40,12 @@ export default function Login() {
     }
   };
 
-
   // has to be changed
   const user = () =>
     onAuthStateChanged(auth, (state) => {
       if (state?.email) {
-       handleRedirectResult()
-       router.push(`/${[state?.displayName]}`);
+        handleRedirectResult();
+        router.push(`/${[state?.displayName]}`);
       }
     });
 
