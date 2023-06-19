@@ -1,20 +1,20 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoLogoIonitron } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/slice/userSlice";
 import { auth } from "@/firebase/firebase";
-import {
-  signOut,
-  onAuthStateChanged,
-} from "firebase/auth";
+import { signOut, onAuthStateChanged, getRedirectResult } from "firebase/auth";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function NavBar() {
   // const user = "dsd";
   const [user, setUser] = useState(null);
+  const [userProfilePhoto, setUserProfilePhoto] = useState(null);
   const router = useRouter();
   // const getUser = onAuthStateChanged(auth, (state) => {
   //   if (state?.email) {
@@ -26,6 +26,7 @@ export default function NavBar() {
     const unsubscribe = onAuthStateChanged(auth, (state) => {
       if (state?.email) {
         setUser(state?.displayName);
+        setUserProfilePhoto(state?.photoURL);
       } else {
         setUser(null);
       }
@@ -62,11 +63,22 @@ export default function NavBar() {
               className="dropdown-content menu p-2 shadow bg-gray-700  rounded-box w-52"
             >
               <li>
-                <Link href="/login" className="text-white">
-                  Profile
-                </Link>
+                <div className="text-white flex justify-between">
+                  {user?.length && <span>{user}</span>}
+                  {userProfilePhoto ? (
+                    <Image
+                      src={userProfilePhoto}
+                      height={40}
+                      style={{ borderRadius: 50 }}
+                      width={40}
+                      alt="profile photo"
+                    />
+                  ) : (
+                    <FaUserCircle size={30} />
+                  )}
+                </div>
               </li>
-              <button onClick={logout} className="btn">
+              <button onClick={logout} className="btn mt-5">
                 Logout
               </button>
             </ul>

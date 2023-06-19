@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
@@ -8,22 +8,58 @@ import {
   GoogleAuthProvider,
   signInWithRedirect,
   onAuthStateChanged,
+  getRedirectResult,
 } from "firebase/auth";
+import userServices from "@/firebase/services/userServices";
 
 export default function Login() {
   const companyName = "Plot Wizard";
   const router = useRouter();
   const provider = new GoogleAuthProvider();
 
-  //have to changed
-  const user = onAuthStateChanged(auth, (state) => {
-    if (state?.email) {
-      router.push(`/${[state.displayName]}`);
+
+  const handleRedirectResult = async () => {
+    try {
+      const result = await getRedirectResult(auth);
+
+      if (result?.user) {
+        const { email, displayName } = result?.user;
+        const createdAt = result?.user.metadata.creationTime;
+
+        await userServices.addUser({
+          email: email,
+          created_at: createdAt,
+          is_premium: false,
+          username: displayName,
+          updated_at: "",
+        });
+        router.push(`/${[displayName]}`);
+      }
+    } catch (err) {
+      console.log("error while creating user", err);
     }
-  });
+  };
+
+
+  // has to be changed
+  const user = () =>
+    onAuthStateChanged(auth, (state) => {
+      if (state?.email) {
+       handleRedirectResult()
+       router.push(`/${[state?.displayName]}`);
+      }
+    });
+
+  useEffect(() => {
+    user();
+  }, []);
 
   const signinGoogle = async () => {
-    const res = await signInWithRedirect(auth, provider);
+    try {
+      const res = await signInWithRedirect(auth, provider);
+    } catch (err) {
+      console.log("error while logging in", err);
+    }
   };
 
   return (

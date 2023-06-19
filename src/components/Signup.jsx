@@ -8,34 +8,58 @@ import { auth } from "@/firebase/firebase";
 import {
   GoogleAuthProvider,
   signInWithRedirect,
-  signOut,
   onAuthStateChanged,
+  getRedirectResult,
 } from "firebase/auth";
+import userServices from "@/firebase/services/userServices";
 
 export default function Signup() {
   const provider = new GoogleAuthProvider();
 
   const router = useRouter();
 
-  const user = onAuthStateChanged(auth, (state) => {
-    if (state?.email) {
-      router.push(`/${[state?.displayName]}`);
+  const handleRedirectResult = async () => {
+    try {
+      const result = await getRedirectResult(auth);
+
+      if (result?.user) {
+        const { email, displayName } = result?.user;
+        const createdAt = result?.user.metadata.creationTime;
+
+        await userServices.addUser({
+          email: email,
+          created_at: createdAt,
+          is_premium: false,
+          username: displayName,
+          updated_at: "",
+        });
+        router.push(`/${[displayName]}`);
+      }
+    } catch (err) {
+      console.log("error while creating user", err);
     }
-  });
+  };
+
+  const user = async () => {
+    onAuthStateChanged(auth, (state) => {
+      if (state?.email) {
+        handleRedirectResult();
+        router.push(`/${[state?.displayName]}`);
+      }
+    });
+  };
 
   useEffect(() => {
     user();
-  }, [auth]);
+  }, []);
 
   const signinGoogle = async () => {
-    const res = await signInWithRedirect(auth, provider);
-    const name = res.user?.displayName;
-    console.log(name);
-    router.push(`/${[name]}`);
-  };
-
-  const logout = async () => {
-    return signOut(auth);
+    console.log("executing");
+    try {
+      const res = await signInWithRedirect(auth, provider);
+    } catch (err) {
+      console.log("signup", err);
+    }
   };
 
   const companyName = "Plot Wizard";
