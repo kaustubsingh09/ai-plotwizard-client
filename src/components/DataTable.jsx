@@ -2,24 +2,40 @@
 import React, { useState, useEffect } from "react";
 import projectServices from "@/firebase/services/projectServices";
 import { auth } from "@/firebase/firebase";
+import { useSelector } from "react-redux";
 
 export default function DataTable() {
-  const user = auth.currentUser?.uid;
-
   const [allProjects, setAllProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const count = useSelector((value) => value.projectSlice.count);
 
   const getProjects = async () => {
     const data = await projectServices.getAllProjects(user);
     setAllProjects(data?.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    setIsLoading(false);
+    if (data) {
+      setIsLoading(false);
+    }
   };
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      if (currentUser) {
+        const uid = currentUser.uid;
+        setUser(uid);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup the listener when the component unmounts
+  }, []);
 
   useEffect(() => {
     if (user) {
       getProjects();
     }
-  }, [user, isLoading]);
+  }, [user, isLoading, count]);
 
   if (isLoading) {
     return (
