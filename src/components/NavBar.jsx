@@ -4,9 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoLogoIonitron } from "react-icons/io";
-import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { logoutUser } from "@/slice/userSlice";
 import { auth } from "@/firebase/firebase";
 import { signOut, onAuthStateChanged, getRedirectResult } from "firebase/auth";
 import { FaUserCircle } from "react-icons/fa";
@@ -60,7 +58,7 @@ export default function NavBar() {
           {user?.length ? (
             <ul
               tabIndex={0}
-              className="dropdown-content menu p-2 shadow bg-gray-700  rounded-box w-52"
+              className="dropdown-content menu p-2 z-20   shadow-none bg-gray-700 rounded-box w-52"
             >
               <li>
                 <div className="text-white flex justify-between">

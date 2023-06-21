@@ -2,10 +2,13 @@
 import React, { useState, useEffect } from "react";
 import projectServices from "@/firebase/services/projectServices";
 import { auth } from "@/firebase/firebase";
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 
 export default function DataTable() {
+  const router = useRouter();
   const [allProjects, setAllProjects] = useState([]);
+  const [userDisplayName, setUserDisplayName] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
   const count = useSelector((value) => value.projectSlice.count);
@@ -17,12 +20,13 @@ export default function DataTable() {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
         const uid = currentUser.uid;
+        const displayName = currentUser.displayName;
         setUser(uid);
+        setUserDisplayName(displayName);
       } else {
         setUser(null);
       }
@@ -35,7 +39,7 @@ export default function DataTable() {
     if (user) {
       getProjects();
     }
-  }, [user, isLoading, count]);
+  }, [user, count]); //=> add no extra dependency
 
   if (isLoading) {
     return (
@@ -62,7 +66,11 @@ export default function DataTable() {
 
           {user?.length ? (
             allProjects?.map((el, index) => (
-              <tr key={el.id}>
+              <tr
+                className="cursor-pointer"
+                key={el.id}
+                onClick={() => router.push(`/${[userDisplayName]}/${[el.id]}`)}
+              >
                 <th>{index + 1}</th>
                 <th>{el.project_name}</th>
                 <td>{el.created_at}</td>
