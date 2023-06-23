@@ -5,7 +5,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 
 export default function DeleteModal({ deleteAction, projectName }) {
   return (
-    <div className="tooltip" data-tip="Delete">
+    <div className="tooltip" data-tip="Delete Project">
       <button onClick={() => window.my_modal_1.showModal()}>
         <AiFillDelete size={20} />
       </button>

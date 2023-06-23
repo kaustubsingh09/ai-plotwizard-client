@@ -4,30 +4,50 @@ import { AiFillFolderAdd } from "react-icons/ai";
 import AddNewCharacterModal from "./AddNewCharacterModal";
 import characterServices from "@/firebase/services/characterServices";
 import { useSelector } from "react-redux";
+import CharacterDetailModal from "./CharacterDetailModal";
 
 export default function CharacterTable({ projectId }) {
   const [openModal, setOpenModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [allCharacters, setAllCharacters] = useState([]);
+  const [characterById, setCharacterById] = useState([]); //FILTERS ALL THE CHARACTERS BY THEIR RESPECTIVE ID's
+  const [characterId, setCharacterId] = useState(null);
+  const [openCharacterDetailModal, setOpenCharacterDetailModal] =
+    useState(false);
+
   const countCharacter = useSelector((value) => value.projectSlice.count);
 
   function closeModal() {
     setOpenModal(!openModal);
   }
 
+  function closeCharacterDetailModal() {
+    setOpenCharacterDetailModal(!openCharacterDetailModal);
+  }
+
   const getCharacters = async () => {
     const data = await characterServices.getAllcharacters(projectId);
-    setAllCharacters(data?.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    if (data) {
-      setIsLoading(false);
+    const character = data?.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    setAllCharacters(character);
+    setIsLoading(false);
+  };
+
+  const getCharacterById = (id) => {
+    const character = allCharacters.find((el) => el.id === id);
+    if (character) {
+      setCharacterById(character);
     }
   };
+
+  useEffect(() => {
+    getCharacterById(characterId);
+  }, [characterId]);
 
   useEffect(() => {
     if (projectId) {
       getCharacters();
     }
-  }, [isLoading, countCharacter]);
+  }, [projectId, countCharacter]);
 
   return (
     <div className="flex flex-col">
@@ -56,7 +76,14 @@ export default function CharacterTable({ projectId }) {
 
             {allCharacters.length ? (
               allCharacters.map((el, index) => (
-                <tr key={el.id}>
+                <tr
+                  className=" cursor-pointer"
+                  key={el.id}
+                  onClick={() => {
+                    setCharacterId(el.id),
+                      setOpenCharacterDetailModal(!openCharacterDetailModal);
+                  }}
+                >
                   <th>{index + 1}</th>
                   <td>{el.character_name}</td>
                   <td>{el.created_at}</td>
@@ -80,6 +107,13 @@ export default function CharacterTable({ projectId }) {
         currentState={openModal}
         changeModalState={closeModal}
       />
+      {openCharacterDetailModal && (
+        <CharacterDetailModal
+          currentState={openCharacterDetailModal}
+          changeModalState={closeCharacterDetailModal}
+          currentCharacterDetails={characterById}
+        />
+      )}
     </div>
   );
 }
