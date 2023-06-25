@@ -1,0 +1,81 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import plotServices from "@/firebase/services/plotServices";
+
+export default function RenderPlotInput({ projectId }) {
+  const [allPlot, setAllPlot] = useState([]);
+  const [plotId, setPlotId] = useState([]);
+
+  const formik = useFormik({
+    initialValues: {
+      plot_details: "",
+      created_at: new Date().toDateString(),
+      updated_at: "",
+    },
+    onSubmit: async (values) => {
+      const updatedValues = {
+        ...values,
+        project_id: projectId,
+      };
+
+      const addPlot = async () => {
+        const newPlot = await plotServices.updateplot(plotId, updatedValues);
+      };
+      await addPlot();
+    },
+  });
+
+  const getAllPlots = async () => {
+    const plot = await plotServices.getAllplot(projectId);
+    const allPlots = plot?.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    const plotId = allPlot.map((el) => el.id);
+    setAllPlot(allPlots);
+    setPlotId(plotId[0]);
+  };
+
+  useEffect(() => {
+    getAllPlots();
+  }, []);
+
+  useEffect(() => {
+    formik.setValues({
+      plot_details: allPlot.map((el) => el.plot_details),
+    });
+  }, [allPlot]);
+
+  const savePlotHandler = (e) => {
+    e.preventDefault();
+    formik.handleSubmit();
+  };
+
+  return (
+    <div className="flex flex-col mt-10 bg-gray-800 p-5">
+      <div className="flex justify-center flex-col items-center gap-3">
+        <span className="font-semibold">Story Plot</span>
+        <form
+          onSubmit={savePlotHandler}
+          className="flex flex-col justify-center gap-2"
+          action=""
+        >
+          <textarea
+            className="textarea"
+            name="plot_details"
+            onChange={formik.handleChange}
+            value={formik.values.plot_details}
+            onBlur={formik.handleBlur}
+            cols={45}
+            rows={10}
+            placeholder="start writing plot of story..."
+          ></textarea>
+          <button className="btn" type="submit">
+            Save
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}

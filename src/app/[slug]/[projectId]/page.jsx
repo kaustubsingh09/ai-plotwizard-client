@@ -5,6 +5,8 @@ import projectServices from "@/firebase/services/projectServices";
 import { GrLinkPrevious } from "react-icons/gr";
 import RenderAllCharacters from "@/components/storyCollections/character/RenderAllCharacters";
 import DeleteModal from "@/components/DeleteModal";
+import RenderPlotInput from "@/components/storyCollections/plot/RenderPlotInput";
+import StorySettings from "@/components/storyCollections/setting/StorySettings";
 
 export default function Project({ params }) {
   const projectId = params.projectId;
@@ -83,6 +85,15 @@ export default function Project({ params }) {
       </div>
       <div>
         <RenderAllCharacters projectId={projectId} />
+      </div>
+      <div>
+        {/* plot input here */}
+        <RenderPlotInput projectId={projectId} />
+        {/* plot input here */}
+        <br />
+        {/* setting input here */}
+        <StorySettings projectId={projectId} />
+        {/* setting input here */}
       </div>
     </div>
   );
