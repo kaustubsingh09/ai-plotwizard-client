@@ -14,15 +14,29 @@ export default function RenderPlotInput({ projectId }) {
       updated_at: "",
     },
     onSubmit: async (values) => {
-      const updatedValues = {
-        ...values,
-        project_id: projectId,
-      };
+      try {
+        const updatedValues = {
+          ...values,
+          project_id: projectId,
+        };
 
-      const addPlot = async () => {
-        const newPlot = await plotServices.updateplot(plotId, updatedValues);
-      };
-      await addPlot();
+        if (plotId) {
+          const addPlot = async () => {
+            const newPlot = await plotServices.updateplot(
+              plotId,
+              updatedValues
+            );
+          };
+          await addPlot();
+        } else {
+          const plot = async () => {
+            const firstPlot = await plotServices.addplot(updatedValues);
+          };
+          await plot();
+        }
+      } catch (err) {
+        console.log("error while creating plot", err);
+      }
     },
   });
 
@@ -39,7 +53,7 @@ export default function RenderPlotInput({ projectId }) {
 
   useEffect(() => {
     getAllPlots();
-  }, []);
+  }, [plotId]);
 
   useEffect(() => {
     formik.setValues({
@@ -67,7 +81,7 @@ export default function RenderPlotInput({ projectId }) {
             onChange={formik.handleChange}
             value={formik.values.plot_details}
             onBlur={formik.handleBlur}
-            cols={45}
+            cols={40}
             rows={10}
             placeholder="start writing plot of story..."
           ></textarea>

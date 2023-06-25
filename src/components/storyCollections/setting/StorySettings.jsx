@@ -14,18 +14,28 @@ export default function StorySettings({ projectId }) {
       updated_at: "",
     },
     onSubmit: async (values) => {
-      const updatedValues = {
-        ...values,
-        project_id: projectId,
-      };
-
-      const addSetting = async () => {
-        const newSetting = await settingServices.updatesetting(
-          settingId,
-          updatedValues
-        );
-      };
-      await addSetting();
+      try {
+        const updatedValues = {
+          ...values,
+          project_id: projectId,
+        };
+        if (settingId) {
+          const addSetting = async () => {
+            const newSetting = await settingServices.updatesetting(
+              settingId,
+              updatedValues
+            );
+          };
+          await addSetting();
+        } else {
+          const settings = async () => {
+            const allSettings = await settingServices.addsetting(updatedValues);
+          };
+          await settings();
+        }
+      } catch (err) {
+        console.log("error while creating setting", err);
+      }
     },
   });
 
@@ -43,7 +53,7 @@ export default function StorySettings({ projectId }) {
 
   useEffect(() => {
     getSavedSettings();
-  }, []);
+  }, [settingId]);
 
   useEffect(() => {
     formik.setValues({
@@ -71,7 +81,7 @@ export default function StorySettings({ projectId }) {
             value={formik.values.setting_details}
             onBlur={formik.handleBlur}
             className="textarea"
-            cols={45}
+            cols={40}
             rows={5}
             placeholder="any specific setting of story..."
           ></textarea>
