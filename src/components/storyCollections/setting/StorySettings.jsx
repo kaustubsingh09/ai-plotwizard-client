@@ -67,7 +67,7 @@ export default function StorySettings({ projectId }) {
   };
 
   return (
-    <div className="flex flex-col bg-gray-800 p-5">
+    <div className="flex flex-col p-5">
       <div className="flex justify-center flex-col items-center gap-3">
         <span className="font-semibold">Story Settings</span>
         <form
@@ -82,7 +82,7 @@ export default function StorySettings({ projectId }) {
             onBlur={formik.handleBlur}
             className="textarea"
             cols={40}
-            rows={5}
+            rows={10}
             placeholder="any specific setting of story..."
           ></textarea>
           <button className="btn" type="submit">

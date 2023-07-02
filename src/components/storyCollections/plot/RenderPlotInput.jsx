@@ -67,7 +67,7 @@ export default function RenderPlotInput({ projectId }) {
   };
 
   return (
-    <div className="flex flex-col mt-10 bg-gray-800 p-5">
+    <div className="flex flex-col p-5">
       <div className="flex justify-center flex-col items-center gap-3">
         <span className="font-semibold">Story Plot</span>
         <form

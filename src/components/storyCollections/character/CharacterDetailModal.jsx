@@ -14,9 +14,14 @@ export default function CharacterDetailModal({
   currentCharacterDetails,
 }) {
   // const router = useRouter();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  function closeModal() {
+    changeModalState();
+  }
 
   const characterId = currentCharacterDetails?.id;
+  const projectId = currentCharacterDetails?.project_id;
 
   function closeModal() {
     changeModalState();
@@ -29,12 +34,25 @@ export default function CharacterDetailModal({
       backstory: "",
       created_at: "",
     },
+
+    onSubmit: async (values) => {
+      const updatedValues = {
+        ...values,
+        project_id: projectId,
+      };
+      const updateCharacters = async () => {
+        await characterServices.updatecharacter(characterId, updatedValues);
+      };
+      await updateCharacters();
+      dispatch(triggerRender());
+      closeModal();
+    },
   });
 
   const deleteCharacter = async () => {
     await characterServices.deletecharacter(characterId);
-    dispatch(triggerRender())
     closeModal();
+    dispatch(triggerRender());
   };
 
   useEffect(() => {
@@ -47,6 +65,11 @@ export default function CharacterDetailModal({
       });
     }
   }, [currentCharacterDetails]);
+
+  const formSubmitHandler = (e) => {
+    e.preventDefault();
+    formik.handleSubmit();
+  };
 
   return (
     <div>
@@ -78,7 +101,7 @@ export default function CharacterDetailModal({
             </button>
           </div>
           <form
-            // onSubmit={formSubmitHandler}
+            onSubmit={formSubmitHandler}
             className="flex flex-col gap-5 p-5"
           >
             <input
@@ -110,7 +133,7 @@ export default function CharacterDetailModal({
             />
             <button
               type="submit"
-              onClick={closeModal}
+              // onClick={closeModal}
               className="btn w-full max-w-xs"
             >
               Save

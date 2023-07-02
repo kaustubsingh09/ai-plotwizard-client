@@ -50,8 +50,8 @@ export default function CharacterTable({ projectId }) {
   }, [projectId, countCharacter]);
 
   return (
-    <div className="flex flex-col">
-      <div className="flex justify-center p-5 gap-5 items-center">
+    <div className="flex flex-col p-2">
+      <div className="flex justify-center p-2 gap-5 items-center bg-gray-800  rounded-xl ">
         <span className="font-bold">All Characters</span>
         <button onClick={() => setOpenModal(true)} className="btn">
           <div className="flex flex-row items-center gap-2">
@@ -60,7 +60,7 @@ export default function CharacterTable({ projectId }) {
           </div>
         </button>
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto mt-2">
         <table className="table">
           {/* head */}
           <thead>
@@ -85,9 +85,9 @@ export default function CharacterTable({ projectId }) {
                   }}
                 >
                   <th>{index + 1}</th>
-                  <td>{el.character_name}</td>
-                  <td>{el.created_at}</td>
-                  <td>{el.updated_at}</td>
+                  <td className=" text-lg font-bold">{el.character_name}</td>
+                  <td className=" text-lg">{el.created_at}</td>
+                  <td className=" text-lg">{el.updated_at}</td>
                 </tr>
               ))
             ) : (
