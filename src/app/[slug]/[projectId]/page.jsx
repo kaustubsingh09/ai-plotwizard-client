@@ -174,7 +174,7 @@ export default function Project({ params }) {
   const sendStoryDetailsRequest = async () => {
     try {
       setGeneratingResponse(true);
-      const response = await axios.post("http://localhost:8001/api/story", {
+      const response = await axios.post("https://expensive-waistcoat.cyclic.cloud/api/story", {
         characters: allCharacters,
         plot: allPlot,
         settings: previousSettings,
