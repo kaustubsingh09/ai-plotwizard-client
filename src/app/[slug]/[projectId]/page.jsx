@@ -156,7 +156,7 @@ export default function Project({ params }) {
         ...doc.data(),
         id: doc.id,
       }));
-      const setting = allSettings[0].setting_details;
+      const setting = allSettings[0]?.setting_details;
       setPreviousSettings(setting);
 
       const plotData = await plotServices.getAllplot(projectId);
@@ -180,8 +180,8 @@ export default function Project({ params }) {
         settings: previousSettings,
       });
       console.log(response);
-      if (response.data) {
-        setStoryResponse(response.data?.data.text);
+      if (response?.data) {
+        setStoryResponse(response.data?.data?.text);
         setImgUrl(response.data?.image);
         setGeneratingResponse(false);
       }
@@ -191,7 +191,6 @@ export default function Project({ params }) {
       setGeneratingResponse(false);
     }
   };
-
   if (genratingResponse) {
     return (
       <div className="flex justify-center h-screen">
@@ -266,6 +265,7 @@ export default function Project({ params }) {
                 <div>
                   {imgUrl && (
                     <img
+                    loading="lazy"
                       src={imgUrl}
                       height={300}
                       width={300}
